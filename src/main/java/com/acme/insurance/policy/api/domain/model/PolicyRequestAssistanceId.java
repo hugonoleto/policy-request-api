@@ -11,7 +11,11 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Embeddable
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class PolicyRequestAssistanceId implements Serializable {
 
     private UUID policyRequestId;

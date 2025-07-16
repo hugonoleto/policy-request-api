@@ -18,7 +18,11 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "policy_request_coverage")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PolicyRequestCoverage {
 
     @EmbeddedId

@@ -1,6 +1,5 @@
 package com.acme.insurance.policy.api.infrastructure.client;
 
-import com.acme.insurance.policy.api.client.FraudApiClient;
 import com.acme.insurance.policy.api.domain.model.FraudAnalysis;
 import com.acme.insurance.policy.api.domain.service.FraudAnalysisService;
 import lombok.RequiredArgsConstructor;

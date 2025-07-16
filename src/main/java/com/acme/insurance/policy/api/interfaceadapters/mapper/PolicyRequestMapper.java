@@ -5,8 +5,11 @@ import com.acme.insurance.policy.api.domain.model.PolicyRequestAssistance;
 import com.acme.insurance.policy.api.domain.model.PolicyRequestAssistanceId;
 import com.acme.insurance.policy.api.domain.model.PolicyRequestCoverage;
 import com.acme.insurance.policy.api.domain.model.PolicyRequestCoverageId;
+import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestAssistanceDTO;
+import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestCoverageDTO;
 import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestCreateDTO;
 import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestCreatedResponseDTO;
+import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestResponseDTO;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,15 +29,22 @@ public interface PolicyRequestMapper {
     PolicyRequestMapper INSTANCE = org.mapstruct.factory.Mappers.getMapper(PolicyRequestMapper.class);
 
     @Mapping(target = "id", expression = "java(UUID.randomUUID())")
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "finishedAt", ignore = true)
-    @Mapping(target = "history", ignore = true)
-    @Mapping(target = "status", constant = "RECEIVED")
     @Mapping(target = "coverages", source = "coverages", qualifiedByName = "mapCoverages")
     @Mapping(target = "assistances", source = "assistances", qualifiedByName = "mapAssistances")
-    PolicyRequest toEntity(PolicyRequestCreateDTO dto);
+    PolicyRequest mapToEntity(PolicyRequestCreateDTO dto);
 
-    PolicyRequestCreatedResponseDTO toResponse(PolicyRequest policyRequest);
+    PolicyRequestCreatedResponseDTO mapToResponse(PolicyRequest policyRequest);
+
+    List<PolicyRequestResponseDTO> mapToResponseDTOList(List<PolicyRequest> policyRequests);
+
+    @Mapping(target = "coverages", source = "coverages")
+    PolicyRequestResponseDTO mapToResponseDTO(PolicyRequest policyRequest);
+
+    @Mapping(target = "name", source = "id.name")
+    PolicyRequestAssistanceDTO mapAssistanceToDTO(PolicyRequestAssistance policyRequestAssistance);
+
+    @Mapping(target = "name", source = "id.name")
+    PolicyRequestCoverageDTO mapCoverageToDTO(PolicyRequestCoverage policyRequestCoverage);
 
     @Named("mapCoverages")
     default Set<PolicyRequestCoverage> mapCoverages(Map<String, java.math.BigDecimal> coverages) {

@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.acme.insurance.policy.api.domain.state.State.APPROVED;
+import static com.acme.insurance.policy.api.domain.state.State.CANCELED;
+import static com.acme.insurance.policy.api.domain.state.State.RECEIVED;
+import static com.acme.insurance.policy.api.domain.state.State.REJECTED;
+
 @Entity
 @Table(name = "policy_request")
 @Getter
@@ -75,14 +80,17 @@ public class PolicyRequest {
     public void init() {
         this.history = new ArrayList<>();
         this.createdAt = OffsetDateTime.now();
+        this.status = RECEIVED.name();
         this.history.add(new PolicyRequestHistory(this.status, this, this.createdAt));
     }
 
     public void addHistory(String status) {
+        this.status = status;
         OffsetDateTime now = OffsetDateTime.now();
         this.history.add(new PolicyRequestHistory(status, this, now));
-        this.status = status;
-        if ("FINISHED".equals(status)) {
+
+        Set<String> finalStatuses = Set.of(APPROVED.name(), CANCELED.name(), REJECTED.name());
+        if (finalStatuses.contains(status)) {
             this.finishedAt = now;
         }
     }

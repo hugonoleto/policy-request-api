@@ -2,9 +2,10 @@ package com.acme.insurance.policy.api.interfaceadapters.controller;
 
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.repository.PolicyRequestRepository;
+import com.acme.insurance.policy.api.interfaceadapters.dto.ErrorDetailsDTO;
 import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestCreateDTO;
 import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestCreatedResponseDTO;
-import org.junit.jupiter.api.Assertions;
+import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import static com.acme.insurance.policy.api.domain.state.State.APPROVED;
 import static com.acme.insurance.policy.api.domain.state.State.REJECTED;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PolicyRequestControllerIT {
@@ -37,7 +39,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
         assertThat(id).isNotNull();
 
@@ -55,7 +57,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
         assertThat(id).isNotNull();
 
@@ -73,7 +75,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
         assertThat(id).isNotNull();
 
@@ -91,7 +93,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
         Thread.sleep(5000);
@@ -108,7 +110,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
         Thread.sleep(5000);
@@ -125,7 +127,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
         Thread.sleep(5000);
@@ -142,7 +144,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
         Thread.sleep(5000);
@@ -159,7 +161,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
         Thread.sleep(5000);
@@ -176,7 +178,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
         Thread.sleep(5000);
@@ -193,7 +195,7 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
         Thread.sleep(5000);
@@ -210,13 +212,75 @@ class PolicyRequestControllerIT {
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
         Thread.sleep(5000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
+    }
+
+    @Test
+    void shouldFindPolicyRequestById() {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(5000));
+
+        var createResponse = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertNotNull(createResponse.getBody());
+        UUID id = createResponse.getBody().getId();
+
+        var getResponse = restTemplate.getForEntity(BASE_PATH + "/" + id, PolicyRequestResponseDTO.class);
+
+        assertThat(getResponse.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(getResponse.getBody()).isNotNull();
+        assertThat(getResponse.getBody().getId()).isEqualTo(id);
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenFindPolicyRequestByInvalidId() {
+        UUID invalidId = UUID.randomUUID();
+
+        var response = restTemplate.getForEntity(BASE_PATH + "/" + invalidId, ErrorDetailsDTO.class);
+
+        assertNotNull(response.getBody());
+        assertThat(response.getBody().getMessage()).isEqualTo("A solicitação de apólice informada não existe.");
+    }
+
+    @Test
+    void shouldCancelPolicyRequest() {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(5000));
+
+        var createResponse = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertNotNull(createResponse.getBody());
+        UUID id = createResponse.getBody().getId();
+
+        restTemplate.patchForObject(BASE_PATH + "/" + id + "/cancel", null, Void.class);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo("CANCELED");
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenCancelAlreadyFinalizedPolicyRequest() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(5000));
+
+        var createResponse = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertNotNull(createResponse.getBody());
+        UUID id = createResponse.getBody().getId();
+
+        Thread.sleep(5000);
+
+        var response = restTemplate.exchange(
+                BASE_PATH + "/" + id + "/cancel",
+                org.springframework.http.HttpMethod.PATCH,
+                null,
+                Void.class
+        );
+
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
     }
 
     private PolicyRequestCreateDTO createPolicyRequestCreateDTO(UUID customerId, String category, BigDecimal insuredAmount) {

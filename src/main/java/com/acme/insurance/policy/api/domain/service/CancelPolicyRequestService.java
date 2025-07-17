@@ -3,12 +3,14 @@ package com.acme.insurance.policy.api.domain.service;
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.repository.PolicyRequestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 import static com.acme.insurance.policy.api.domain.state.State.CANCELED;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CancelPolicyRequestService {
@@ -18,10 +20,12 @@ public class CancelPolicyRequestService {
 
 
     public void cancel(UUID id) {
-        PolicyRequest enitity = activePolicyRequestSearchService.search(id);
+        log.info("Iniciando cancelamento da solicitação com ID: {}", id);
+        PolicyRequest policyRequest = activePolicyRequestSearchService.search(id);
 
-        enitity.addHistory(CANCELED.name());
-        repository.save(enitity);
+        policyRequest.addHistory(CANCELED.name());
+        repository.save(policyRequest);
+        log.info("Solicitação {} cancelada com sucesso.", policyRequest.getId());
     }
 
 }

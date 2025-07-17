@@ -6,8 +6,10 @@ import com.acme.insurance.policy.api.infrastructure.messaging.GenericEventPublis
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.repository.PolicyRequestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreatePolicyRequestService {
@@ -15,10 +17,12 @@ public class CreatePolicyRequestService {
     private final PolicyRequestRepository repository;
     private final GenericEventPublisher publisher;
 
-    public PolicyRequest process(PolicyRequest entity) {
-        repository.save(entity);
-        publisher.publish(new GenericEvent(entity.getId()), QueueNames.POLICY_STATE_CHANGED);
-        return entity;
+    public PolicyRequest create(PolicyRequest policyRequest) {
+        log.info("Iniciando criação da solicitação com ID: {}", policyRequest.getId());
+        repository.save(policyRequest);
+        publisher.publish(new GenericEvent(policyRequest.getId()), QueueNames.POLICY_STATE_CHANGED);
+        log.info("Solicitação {} foi enviado para iniciar o fluxo de processamento.", policyRequest.getId());
+        return policyRequest;
     }
 
 }

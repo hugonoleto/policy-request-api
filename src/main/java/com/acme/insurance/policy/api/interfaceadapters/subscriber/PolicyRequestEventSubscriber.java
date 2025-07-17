@@ -7,7 +7,7 @@ import com.acme.insurance.policy.api.domain.event.SubscriptionStatusEvent;
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.service.ActivePolicyRequestSearchService;
 import com.acme.insurance.policy.api.domain.service.PolicyStateProcessorService;
-import com.acme.insurance.policy.api.domain.service.PolicyTransactionService;
+import com.acme.insurance.policy.api.domain.service.PolicyCallbackHandlerService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -22,7 +22,7 @@ public class PolicyRequestEventSubscriber {
 
     private final ActivePolicyRequestSearchService activePolicyRequestSearchService;
     private final PolicyStateProcessorService policyStateProcessorService;
-    private final PolicyTransactionService policyTransactionService;
+    private final PolicyCallbackHandlerService policyCallbackHandlerService;
 
     @RabbitListener(queues = QueueNames.POLICY_STATE_CHANGED)
     public void handlePolicyRequestEvent(GenericEvent event) {
@@ -37,8 +37,8 @@ public class PolicyRequestEventSubscriber {
     @PostConstruct
     private void initHandlers() {
         eventHandlers = Map.of(
-                PaymentStatusEvent.class, (req, evt) -> policyTransactionService.handlePaymentStatusUpdate(req, ((PaymentStatusEvent) evt).getPaymentStatus()),
-                SubscriptionStatusEvent.class, (req, evt) -> policyTransactionService.handleSubscriptionStatusUpdate(req, ((SubscriptionStatusEvent) evt).getSubscriptionStatus())
+                PaymentStatusEvent.class, (req, evt) -> policyCallbackHandlerService.handlePaymentStatusUpdate(req, ((PaymentStatusEvent) evt).getPaymentStatus()),
+                SubscriptionStatusEvent.class, (req, evt) -> policyCallbackHandlerService.handleSubscriptionStatusUpdate(req, ((SubscriptionStatusEvent) evt).getSubscriptionStatus())
         );
     }
 }

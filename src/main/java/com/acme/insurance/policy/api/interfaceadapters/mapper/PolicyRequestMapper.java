@@ -31,14 +31,14 @@ public interface PolicyRequestMapper {
     @Mapping(target = "id", expression = "java(UUID.randomUUID())")
     @Mapping(target = "coverages", source = "coverages", qualifiedByName = "mapCoverages")
     @Mapping(target = "assistances", source = "assistances", qualifiedByName = "mapAssistances")
-    PolicyRequest mapToEntity(PolicyRequestCreateDTO dto);
+    PolicyRequest toEntity(PolicyRequestCreateDTO dto);
 
-    PolicyRequestCreatedResponseDTO mapToResponse(PolicyRequest policyRequest);
+    PolicyRequestCreatedResponseDTO toResponseCreatedDTO(PolicyRequest policyRequest);
 
-    List<PolicyRequestResponseDTO> mapToResponseDTOList(List<PolicyRequest> policyRequests);
+    List<PolicyRequestResponseDTO> toResponseDTOList(List<PolicyRequest> policyRequests);
 
     @Mapping(target = "coverages", source = "coverages")
-    PolicyRequestResponseDTO mapToResponseDTO(PolicyRequest policyRequest);
+    PolicyRequestResponseDTO toResponseDTO(PolicyRequest policyRequest);
 
     @Mapping(target = "name", source = "id.name")
     PolicyRequestAssistanceDTO mapAssistanceToDTO(PolicyRequestAssistance policyRequestAssistance);

@@ -10,15 +10,13 @@ public class GenericEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
 
+    private static final String POLICY_EXCHANGE = "policy.exchange";
+
     public <T> void publish(T event, String queueName) {
         rabbitTemplate.convertAndSend(
-                "policy.exchange",
+                POLICY_EXCHANGE,
                 queueName,
-                event,
-                message -> {
-                    message.getMessageProperties().setHeader("__TypeId__", event.getClass().getSimpleName());
-                    return message;
-                }
+                event
         );
     }
 }

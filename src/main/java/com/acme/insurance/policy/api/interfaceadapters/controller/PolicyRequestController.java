@@ -5,10 +5,12 @@ import com.acme.insurance.policy.api.domain.model.PolicyRequestFilter;
 import com.acme.insurance.policy.api.domain.service.CancelPolicyRequestService;
 import com.acme.insurance.policy.api.domain.service.CreatePolicyRequestService;
 import com.acme.insurance.policy.api.domain.service.PolicyRequestSearchByFiltersService;
+import com.acme.insurance.policy.api.domain.service.PolicySearchByIdService;
 import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestCreateDTO;
 import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestCreatedResponseDTO;
 import com.acme.insurance.policy.api.interfaceadapters.dto.PolicyRequestResponseDTO;
 import com.acme.insurance.policy.api.interfaceadapters.mapper.PolicyRequestMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,13 +33,14 @@ public class PolicyRequestController {
 
     private final CreatePolicyRequestService createPolicyRequestService;
     private final PolicyRequestSearchByFiltersService policyRequestSearchByFiltersService;
+    private final PolicySearchByIdService policySearchByIdService;
     private final CancelPolicyRequestService cancelPolicyRequestService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PolicyRequestCreatedResponseDTO create(@RequestBody PolicyRequestCreateDTO request) {
-        PolicyRequest entity = createPolicyRequestService.process(PolicyRequestMapper.INSTANCE.mapToEntity(request));
-        return PolicyRequestMapper.INSTANCE.mapToResponse(entity);
+    public PolicyRequestCreatedResponseDTO create(@RequestBody @Valid PolicyRequestCreateDTO request) {
+        PolicyRequest entity = createPolicyRequestService.create(PolicyRequestMapper.INSTANCE.toEntity(request));
+        return PolicyRequestMapper.INSTANCE.toResponseCreatedDTO(entity);
     }
 
     @GetMapping
@@ -56,7 +59,13 @@ public class PolicyRequestController {
                 .build();
 
         List<PolicyRequest> policyRequests = policyRequestSearchByFiltersService.search(filter);
-        return PolicyRequestMapper.INSTANCE.mapToResponseDTOList(policyRequests);
+        return PolicyRequestMapper.INSTANCE.toResponseDTOList(policyRequests);
+    }
+
+    @GetMapping("/{id}")
+    public PolicyRequestResponseDTO searchById(@PathVariable UUID id) {
+        PolicyRequest policyRequest = policySearchByIdService.search(id);
+        return PolicyRequestMapper.INSTANCE.toResponseDTO(policyRequest);
     }
 
     @PatchMapping("/{id}/cancel")

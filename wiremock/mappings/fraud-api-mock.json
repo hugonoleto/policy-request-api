@@ -1,57 +1,97 @@
 {
-  "mappings": [
+  "mappings":[
     {
-      "request": {
-        "method": "GET",
-        "urlPattern": "/fraud-analysis/b1a7c8e2-1234-4f56-9abc-1234567890ab"
+      "request":{
+        "method":"GET",
+        "urlPattern":"/fraud-analysis/44444444-4444-4444-4444-444444444444"
       },
-      "response": {
-        "status": 200,
-        "jsonBody": {
-          "orderId": "{{request.path.[1]}}",
-          "customerId": "7c2a27ba-71ef-4dd8-a3cf-5e094316ffd8",
-          "analyzedAt": "2024-05-10T12:00:00Z",
-          "classification": "HIGH_RISK",
-          "occurrences": [
+      "response":{
+        "status":200,
+        "jsonBody":{
+          "customerId":"{{request.path.[1]}}",
+          "analyzedAt":"2024-05-10T12:00:00Z",
+          "classification":"HIGH_RISK",
+          "occurrences":[
             {
-              "id": "e053467f-bd48-4fd2-9481-75bd4e88ee40",
-              "productId": 78900069,
-              "type": "FRAUD",
-              "description": "Attempted Fraudulent transaction",
-              "createdAt": "2024-05-10T12:00:00Z",
-              "updatedAt": "2024-05-10T12:00:00Z"
+              "id":"e053467f-bd48-4fd2-9481-75bd4e88ee40",
+              "productId":78900069,
+              "type":"FRAUD",
+              "description":"Attempted Fraudulent transaction",
+              "createdAt":"2024-05-10T12:00:00Z",
+              "updatedAt":"2024-05-10T12:00:00Z"
             },
             {
-              "id": "f053467f-bd48-4fd2-9481-75bd4e88ee41",
-              "productId": 104445569,
-              "type": "SUSPICION",
-              "description": "Unusual activity flagged for review",
-              "createdAt": "2024-04-09T14:35:30Z",
-              "updatedAt": "2024-04-09T14:35:30Z"
+              "id":"f053467f-bd48-4fd2-9481-75bd4e88ee41",
+              "productId":104445569,
+              "type":"SUSPICION",
+              "description":"Unusual activity flagged for review",
+              "createdAt":"2024-04-09T14:35:30Z",
+              "updatedAt":"2024-04-09T14:35:30Z"
             }
           ]
         },
-        "headers": {
-          "Content-Type": "application/json"
+        "headers":{
+          "Content-Type":"application/json"
         }
       }
     },
     {
-      "request": {
-        "method": "GET",
-        "urlPattern": "/fraud-analysis/([a-zA-Z0-9\\-]+)"
+      "request":{
+        "method":"GET",
+        "urlPattern":"/fraud-analysis/55555555-5555-5555-5555-555555555555"
       },
-      "response": {
-        "status": 200,
-        "jsonBody": {
-          "orderId": "{{request.path.[1]}}",
-          "customerId": "7c2a27ba-71ef-4dd8-a3cf-5e094316ffd8",
-          "analyzedAt": "2024-05-10T12:00:00Z",
-          "classification": "REGULAR",
-          "occurrences": []
+      "response":{
+        "status":200,
+        "jsonBody":{
+          "customerId":"{{request.path.[1]}}",
+          "analyzedAt":"2024-05-10T12:00:00Z",
+          "classification":"PREFERENTIAL",
+          "occurrences":[
+
+          ]
         },
-        "headers": {
-          "Content-Type": "application/json"
+        "headers":{
+          "Content-Type":"application/json"
+        }
+      }
+    },
+    {
+      "request":{
+        "method":"GET",
+        "urlPattern":"/fraud-analysis/66666666-6666-6666-6666-666666666666"
+      },
+      "response":{
+        "status":200,
+        "jsonBody":{
+          "customerId":"{{request.path.[1]}}",
+          "analyzedAt":"2024-05-10T12:00:00Z",
+          "classification":"NO_INFORMATION",
+          "occurrences":[
+
+          ]
+        },
+        "headers":{
+          "Content-Type":"application/json"
+        }
+      }
+    },
+    {
+      "request":{
+        "method":"GET",
+        "urlPattern":"/fraud-analysis/(?!(44444444-4444-4444-4444-444444444444|55555555-5555-5555-5555-555555555555|66666666-6666-6666-6666-666666666666)$)([a-zA-Z0-9\\-]+)"
+      },
+      "response":{
+        "status":200,
+        "jsonBody":{
+          "customerId":"{{request.path.[1]}}",
+          "analyzedAt":"2024-05-10T12:00:00Z",
+          "classification":"REGULAR",
+          "occurrences":[
+
+          ]
+        },
+        "headers":{
+          "Content-Type":"application/json"
         }
       }
     }

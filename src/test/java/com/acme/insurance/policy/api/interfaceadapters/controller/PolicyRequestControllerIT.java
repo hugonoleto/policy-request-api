@@ -32,7 +32,7 @@ class PolicyRequestControllerIT {
 
     @Test
     void shouldCreateAndApprovePolicyRequest() throws InterruptedException {
-        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID());
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(5000));
 
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
@@ -50,7 +50,7 @@ class PolicyRequestControllerIT {
     @Test
     void shouldCreateAndRejectedByPaymentServicePolicyRequest() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO
-                (UUID.fromString("11111111-1111-1111-1111-111111111111"));
+                (UUID.fromString("11111111-1111-1111-1111-111111111111"), "AUTO", BigDecimal.valueOf(5000));
 
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
@@ -68,7 +68,7 @@ class PolicyRequestControllerIT {
     @Test
     void shouldCreateAndRejectedBySubscriptionServicePolicyRequest() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO
-                (UUID.fromString("22222222-2222-2222-2222-222222222222"));
+                (UUID.fromString("22222222-2222-2222-2222-222222222222"), "AUTO", BigDecimal.valueOf(5000));
 
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
 
@@ -87,11 +87,15 @@ class PolicyRequestControllerIT {
     void shouldApproveHighRiskAutoWhenInsuredAmountIsValid() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
                 UUID.fromString("44444444-4444-4444-4444-444444444444"), "AUTO", BigDecimal.valueOf(250000));
+
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
+
         Thread.sleep(5000);
+
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
     }
@@ -100,11 +104,15 @@ class PolicyRequestControllerIT {
     void shouldRejectHighRiskAutoWhenInsuredAmountIsInvalid() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
                 UUID.fromString("44444444-4444-4444-4444-444444444444"), "AUTO", BigDecimal.valueOf(250001));
+
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
+
         Thread.sleep(5000);
+
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
     }
@@ -113,11 +121,15 @@ class PolicyRequestControllerIT {
     void shouldApprovePreferentialResidentialWhenInsuredAmountIsValid() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
                 UUID.fromString("55555555-5555-5555-5555-555555555555"), "RESIDENTIAL", BigDecimal.valueOf(450000));
+
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
+
         Thread.sleep(5000);
+
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
     }
@@ -126,11 +138,15 @@ class PolicyRequestControllerIT {
     void shouldRejectPreferentialResidentialWhenInsuredAmountIsInvalid() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
                 UUID.fromString("55555555-5555-5555-5555-555555555555"), "RESIDENTIAL", BigDecimal.valueOf(450001));
+
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
+
         Thread.sleep(5000);
+
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
     }
@@ -139,11 +155,15 @@ class PolicyRequestControllerIT {
     void shouldApproveNoInformationLifeWhenInsuredAmountIsValid() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
                 UUID.fromString("66666666-6666-6666-6666-666666666666"), "LIFE", BigDecimal.valueOf(200000));
+
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
+
         Thread.sleep(5000);
+
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
     }
@@ -152,11 +172,15 @@ class PolicyRequestControllerIT {
     void shouldRejectNoInformationLifeWhenInsuredAmountIsInvalid() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
                 UUID.fromString("66666666-6666-6666-6666-666666666666"), "LIFE", BigDecimal.valueOf(200001));
+
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
+
         Thread.sleep(5000);
+
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
     }
@@ -165,11 +189,15 @@ class PolicyRequestControllerIT {
     void shouldApproveRegularOtherCategoryWhenInsuredAmountIsValid() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
                 UUID.randomUUID(), "OUTRA", BigDecimal.valueOf(255000));
+
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
+
         Thread.sleep(5000);
+
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
     }
@@ -178,11 +206,15 @@ class PolicyRequestControllerIT {
     void shouldRejectRegularOtherCategoryWhenInsuredAmountIsInvalid() throws InterruptedException {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
                 UUID.randomUUID(), "OUTRA", BigDecimal.valueOf(255001));
+
         var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
+
         Thread.sleep(5000);
+
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
     }
@@ -196,23 +228,6 @@ class PolicyRequestControllerIT {
                 .paymentMethod("CREDIT_CARD")
                 .totalMonthlyPremiumAmount(BigDecimal.valueOf(150.75))
                 .insuredAmount(insuredAmount)
-                .coverages(Map.of(
-                        "ROUBO", BigDecimal.valueOf(20000.00),
-                        "COLISAO", BigDecimal.valueOf(30000.00)
-                ))
-                .assistances(List.of("GUINCHO", "CARRO_RESERVA"))
-                .build();
-    }
-
-    private PolicyRequestCreateDTO createPolicyRequestCreateDTO(UUID customerId) {
-        return PolicyRequestCreateDTO.builder()
-                .customerId(customerId)
-                .productId(UUID.randomUUID())
-                .category("AUTO")
-                .salesChannel("ONLINE")
-                .paymentMethod("CREDIT_CARD")
-                .totalMonthlyPremiumAmount(BigDecimal.valueOf(150.75))
-                .insuredAmount(BigDecimal.valueOf(50000.00))
                 .coverages(Map.of(
                         "ROUBO", BigDecimal.valueOf(20000.00),
                         "COLISAO", BigDecimal.valueOf(30000.00)

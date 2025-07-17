@@ -18,7 +18,6 @@ public class CancelPolicyRequestService {
     private final ActivePolicyRequestSearchService activePolicyRequestSearchService;
     private final PolicyRequestRepository repository;
 
-
     public void cancel(UUID id) {
         log.info("Iniciando cancelamento da solicitação com ID: {}", id);
         PolicyRequest policyRequest = activePolicyRequestSearchService.search(id);

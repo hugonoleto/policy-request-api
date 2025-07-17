@@ -2,9 +2,9 @@ package com.acme.insurance.policy.api.domain.state;
 
 import com.acme.insurance.policy.api.domain.constants.QueueNames;
 import com.acme.insurance.policy.api.domain.event.GenericEvent;
-import com.acme.insurance.policy.api.infrastructure.messaging.GenericEventPublisher;
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.repository.PolicyRequestRepository;
+import com.acme.insurance.policy.api.infrastructure.messaging.GenericEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,9 +26,6 @@ public class ValidatedState implements PolicyState {
 
     @Override
     public void execute(PolicyRequest policyRequest) {
-        log.info("Iniciando processamento para solicitação com ID: {} e status: {}",
-                policyRequest.getId(), policyRequest.getStatus());
-
         policyRequest.addHistory(State.PENDING.name());
         log.debug("Histórico atualizado para solicitação com ID {}: {}",
                 policyRequest.getId(), policyRequest.getHistory());

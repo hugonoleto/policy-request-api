@@ -73,16 +73,15 @@ public class PolicyCallbackHandlerService {
                 .toList();
 
         if (historyStatuses.contains(PAYMENT_CONFIRMED.name()) && historyStatuses.contains(SUBSCRIPTION_AUTHORIZED.name())) {
-            log.info("Solicitação com ID: {} aprovada.", policyRequest.getId());
+            log.info("Solicitação {} aprovada.", policyRequest.getId());
             policyRequest.addHistory(APPROVED.name());
         }
     }
 
     private void notifyClientFinalStatus(PolicyRequest policyRequest) {
-        log.debug("Notificando cliente sobre status final para solicitação com ID: {}", policyRequest.getId());
-
         if (isFinalized(policyRequest.getStatus())) {
-            log.info("Status finalizado para solicitação com ID: {}, publicando evento.", policyRequest.getId());
+            log.info("Solicitação {} foi finalizada com o status '{}'. Enviando notificação por e-mail ao cliente.",
+                    policyRequest.getId(), policyRequest.getStatus());
             publisher.publish(new GenericEvent(policyRequest.getId()), POLICY_NOTIFICATION);
         }
     }

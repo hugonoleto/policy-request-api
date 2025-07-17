@@ -3,6 +3,7 @@ package com.acme.insurance.policy.api.interfaceadapters.subscriber;
 import com.acme.insurance.policy.api.domain.constants.QueueNames;
 import com.acme.insurance.policy.api.domain.event.GenericEvent;
 import com.acme.insurance.policy.api.domain.event.PaymentStatusEvent;
+import com.acme.insurance.policy.api.domain.exception.PolicyBadRequestException;
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.model.enums.PaymentStatus;
 import com.acme.insurance.policy.api.domain.service.ActivePolicyRequestSearchService;
@@ -22,8 +23,9 @@ import static com.acme.insurance.policy.api.domain.state.State.PENDING;
 public class PaymentProcessedEventSubscriber {
 
     private final ActivePolicyRequestSearchService activePolicyRequestSearchService;
-
     private final GenericEventPublisher publisher;
+
+    private static final String INVALID_PAYMENT_STATUS_MESSAGE = "Status inválido para processamento de pagamento.";
 
     @RabbitListener(queues = QueueNames.POLICY_PAYMENT)
     public void handlePaymentProcessed(GenericEvent event) {
@@ -32,9 +34,9 @@ public class PaymentProcessedEventSubscriber {
             log.info("Pagamento processado para solicitação: {} ", policyRequest.getId());
             publisher.publish(buildPaymentStatusEvent(policyRequest.getId()), QueueNames.POLICY_STATE_CHANGED);
         } else {
-            log.error("Não é possivel processar pagamento {} pois está com status diferente de {}",
+            log.error("Não é possivel processar pagamento da solicitação {}, pois está com status diferente de {}",
                     event.getPolicyRequestId(), PENDING.name());
-            //TODO: Implementar lógica de tratamento de erro ou notificação
+            throw new PolicyBadRequestException(INVALID_PAYMENT_STATUS_MESSAGE);
         }
     }
 

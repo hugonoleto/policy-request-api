@@ -33,8 +33,6 @@ public class ReceivedState implements PolicyState {
 
     @Override
     public void execute(PolicyRequest policyRequest) {
-        log.info("Iniciando processamento para solicitação com ID: {} e status: {}", policyRequest.getId(), policyRequest.getStatus());
-
         FraudAnalysis fraudAnalysis = fraudAnalysisService.getFraudAnalysis(policyRequest.getCustomerId().toString());
         log.debug("Análise de fraude obtida. Cliente ID: {}, solicitação ID: {}, Classificação: {}",
                 policyRequest.getCustomerId(), policyRequest.getId(), fraudAnalysis.getClassification());
@@ -53,7 +51,6 @@ public class ReceivedState implements PolicyState {
 
         if (VALIDATED.name().equals(policyRequest.getStatus())) {
             publisher.publish(new GenericEvent(policyRequest.getId()), POLICY_STATE_CHANGED);
-            log.info("Evento de mudança de estado publicado para solicitação com ID: {}", policyRequest.getId());
         }
     }
 }

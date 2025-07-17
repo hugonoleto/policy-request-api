@@ -1,0 +1,509 @@
+{
+	"info": {
+		"_postman_id": "e8672c17-45dd-4ea1-880f-ec21bc2523b2",
+		"name": "Policy Request API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46859742",
+		"_collection_link": "https://hugonoleto-5347701.postman.co/workspace/Hugo-Noleto's-Workspace~1730e77c-0d01-4359-81f4-8615e944cf56/collection/46859742-e8672c17-45dd-4ea1-880f-ec21bc2523b2?action=share&source=collection_link&creator=46859742"
+	},
+	"item": [
+		{
+			"name": "Testes de cadastro",
+			"item": [
+				{
+					"name": "1. Criar e aprovar solicitação de apólice (cliente regular)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"8bd3a3de-1c69-4df6-a553-e88f222e6a38\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 5000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"8bd3a3de-1c69-4df6-a553-e88f222e6a38\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 5000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Cliente rejeitado pelo serviço de pagamento",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"11111111-1111-1111-1111-111111111111\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 5000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"11111111-1111-1111-1111-111111111111\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 5000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Cliente rejeitado pelo serviço de assinatura",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"22222222-2222-2222-2222-222222222222\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 5000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"22222222-2222-2222-2222-222222222222\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 5000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Cliente HIGH_RISK (aprovado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"44444444-4444-4444-4444-444444444444\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 250000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"44444444-4444-4444-4444-444444444444\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 250000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Cliente HIGH_RISK (rejeitado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"44444444-4444-4444-4444-444444444444\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 250001,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"44444444-4444-4444-4444-444444444444\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 250001,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "6. Cliente PREFERENTIAL (aprovado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"55555555-5555-5555-5555-555555555555\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"RESIDENTIAL\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 450000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"55555555-5555-5555-5555-555555555555\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"RESIDENTIAL\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 450000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "7. Cliente PREFERENTIAL (rejeitado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"55555555-5555-5555-5555-555555555555\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"RESIDENTIAL\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 450001,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"55555555-5555-5555-5555-555555555555\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"RESIDENTIAL\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 450001,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "8. Cliente NO_INFORMATION (aprovado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"66666666-6666-6666-6666-666666666666\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"LIFE\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 200000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"66666666-6666-6666-6666-666666666666\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"LIFE\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 200000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "9. Cliente NO_INFORMATION (rejeitado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"66666666-6666-6666-6666-666666666666\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"LIFE\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 200001,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"66666666-6666-6666-6666-666666666666\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"LIFE\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 200001,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "10. Cliente REGULAR (categoria OUTRA, aprovado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"8bd3a3de-1c69-4df6-a553-e88f222e6a38\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"OUTRA\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 255000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"8bd3a3de-1c69-4df6-a553-e88f222e6a38\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"OUTRA\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 255000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "11. Cliente REGULAR (categoria OUTRA, rejeitado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": \"8bd3a3de-1c69-4df6-a553-e88f222e6a38\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"OUTRA\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 255001,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/policy-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"policy-requests"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:8090/api/policy-requests' \\\r\n--header 'content-type: application/json' \\\r\n--data '{\r\n  \"customerId\": \"8bd3a3de-1c69-4df6-a553-e88f222e6a38\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"OUTRA\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 255001,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Criar solicitação",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"customerId\": \"8bd3a3de-1c69-4df6-a553-e88f222e6a38\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 50000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/api/policy-requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"policy-requests"
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url http://localhost:8090/api/policy-requests \\\r\n  --header 'content-type: application/json' \\\r\n  --data '{\r\n  \"customerId\": \"8bd3a3de-1c69-4df6-a553-e88f222e6a38\",\r\n  \"productId\": \"c2b8d9f3-5678-4e12-8def-0987654321cd\",\r\n  \"category\": \"AUTO\",\r\n  \"salesChannel\": \"ONLINE\",\r\n  \"paymentMethod\": \"CREDIT_CARD\",\r\n  \"totalMonthlyPremiumAmount\": 150.75,\r\n  \"insuredAmount\": 50000,\r\n  \"coverages\": {\r\n    \"ROUBO\": 20000,\r\n    \"COLISAO\": 30000\r\n  },\r\n  \"assistances\": [\r\n    \"GUINCHO\",\r\n    \"CARRO_RESERVA\"\r\n  ]\r\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar solicitação com filtros",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/api/policy-requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"policy-requests"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "CANCELED",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'http://localhost:8090/api/policy-requests?status=CANCELED'"
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar solicitação por id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/api/policy-requests/68b3a79f-acd5-4ba5-ba12-d92f4dd8e62d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"policy-requests",
+						"68b3a79f-acd5-4ba5-ba12-d92f4dd8e62d"
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url http://localhost:8090/api/policy-requests/68b3a79f-acd5-4ba5-ba12-d92f4dd8e62d"
+			},
+			"response": []
+		},
+		{
+			"name": "Cancelar solicitação",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/api/policy-requests/3d4dc33a-9c1b-4fb7-9a58-87576521f59c/cancel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"policy-requests",
+						"3d4dc33a-9c1b-4fb7-9a58-87576521f59c",
+						"cancel"
+					]
+				},
+				"description": "Generated from cURL: curl --request PATCH \\\r\n  --url http://localhost:8090/api/policy-requests/3d4dc33a-9c1b-4fb7-9a58-87576521f59c/cancel"
+			},
+			"response": []
+		}
+	]
+}

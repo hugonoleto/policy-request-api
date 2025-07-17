@@ -35,3 +35,22 @@ CREATE TABLE policy_request_history (
     status VARCHAR(24) NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
+
+-- Tabela de clientes bloqueados para pagamento e assinatura
+CREATE TABLE customer_blocked (
+    id UUID PRIMARY KEY,
+    entity_type VARCHAR(13) NOT NULL CHECK (entity_type IN ('PAYMENT', 'SUBSCRIPTION', 'BOTH')),
+    blocked_at TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
+-- Cliente bloqueado para pagamento
+INSERT INTO customer_blocked (id, entity_type, blocked_at)
+VALUES ('11111111-1111-1111-1111-111111111111', 'PAYMENT', NOW());
+
+-- Cliente bloqueado para assinatura
+INSERT INTO customer_blocked (id, entity_type, blocked_at)
+VALUES ('22222222-2222-2222-2222-222222222222', 'SUBSCRIPTION', NOW());
+
+-- Cliente bloqueado para ambos (pagamento e assinatura)
+INSERT INTO customer_blocked (id, entity_type, blocked_at)
+VALUES ('33333333-3333-3333-3333-333333333333', 'BOTH', NOW());

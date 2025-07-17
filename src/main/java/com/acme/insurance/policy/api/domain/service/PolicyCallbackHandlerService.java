@@ -3,8 +3,7 @@ package com.acme.insurance.policy.api.domain.service;
 import com.acme.insurance.policy.api.domain.event.GenericEvent;
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.model.PolicyRequestHistory;
-import com.acme.insurance.policy.api.domain.model.enums.PaymentStatus;
-import com.acme.insurance.policy.api.domain.model.enums.SubscriptionStatus;
+import com.acme.insurance.policy.api.domain.model.enums.PaymentSubscriptionStatus;
 import com.acme.insurance.policy.api.domain.repository.PolicyRequestRepository;
 import com.acme.insurance.policy.api.infrastructure.messaging.GenericEventPublisher;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +14,10 @@ import java.util.List;
 
 import static com.acme.insurance.policy.api.domain.constants.QueueNames.POLICY_NOTIFICATION;
 import static com.acme.insurance.policy.api.domain.state.State.APPROVED;
-import static com.acme.insurance.policy.api.domain.state.State.PAYMENT_CONFIRMED;
+import static com.acme.insurance.policy.api.domain.state.State.PAYMENT_APPROVED;
 import static com.acme.insurance.policy.api.domain.state.State.PAYMENT_REJECTED;
 import static com.acme.insurance.policy.api.domain.state.State.REJECTED;
-import static com.acme.insurance.policy.api.domain.state.State.SUBSCRIPTION_AUTHORIZED;
+import static com.acme.insurance.policy.api.domain.state.State.SUBSCRIPTION_APPROVED;
 import static com.acme.insurance.policy.api.domain.state.State.SUBSCRIPTION_REJECTED;
 
 @Slf4j
@@ -29,13 +28,13 @@ public class PolicyCallbackHandlerService {
     private final PolicyRequestRepository repository;
     private final GenericEventPublisher publisher;
 
-    public void handlePaymentStatusUpdate(PolicyRequest policyRequest, PaymentStatus paymentStatus) {
+    public void handlePaymentStatusUpdate(PolicyRequest policyRequest, PaymentSubscriptionStatus paymentSubscriptionStatus) {
         log.info("Atualizando status de pagamento para solicitação com ID: {}, Status: {}",
-                policyRequest.getId(), paymentStatus);
+                policyRequest.getId(), paymentSubscriptionStatus);
 
-        if (paymentStatus.equals(PaymentStatus.CONFIRMED)) {
+        if (paymentSubscriptionStatus.equals(PaymentSubscriptionStatus.APPROVED)) {
             log.debug("Pagamento confirmado para solicitação com ID: {}", policyRequest.getId());
-            policyRequest.addHistory(PAYMENT_CONFIRMED.name());
+            policyRequest.addHistory(PAYMENT_APPROVED.name());
             approveIfPaymentAndSubscriptionAuthorized(policyRequest);
         } else {
             log.warn("Pagamento rejeitado para solicitação com ID: {}", policyRequest.getId());
@@ -47,16 +46,16 @@ public class PolicyCallbackHandlerService {
         notifyClientFinalStatus(policyRequest);
     }
 
-    public void handleSubscriptionStatusUpdate(PolicyRequest policyRequest, SubscriptionStatus subscriptionStatus) {
-        log.info("Atualizando status de subscrição para solicitação com ID: {}, Status: {}",
-                policyRequest.getId(), subscriptionStatus);
+    public void handleSubscriptionStatusUpdate(PolicyRequest policyRequest, PaymentSubscriptionStatus paymentSubscriptionStatus) {
+        log.info("Atualizando status de assinatura para solicitação com ID: {}, Status: {}",
+                policyRequest.getId(), paymentSubscriptionStatus);
 
-        if (subscriptionStatus.equals(SubscriptionStatus.AUTHORIZED)) {
-            log.debug("Subscrição autorizada para solicitação com ID: {}", policyRequest.getId());
-            policyRequest.addHistory(SUBSCRIPTION_AUTHORIZED.name());
+        if (paymentSubscriptionStatus.equals(PaymentSubscriptionStatus.APPROVED)) {
+            log.debug("Assinatura autorizada para solicitação com ID: {}", policyRequest.getId());
+            policyRequest.addHistory(SUBSCRIPTION_APPROVED.name());
             approveIfPaymentAndSubscriptionAuthorized(policyRequest);
         } else {
-            log.warn("Subscrição rejeitada para solicitação com ID: {}", policyRequest.getId());
+            log.warn("Assinatura rejeitada para solicitação com ID: {}", policyRequest.getId());
             policyRequest.addHistory(SUBSCRIPTION_REJECTED.name());
             policyRequest.addHistory(REJECTED.name());
         }
@@ -72,7 +71,7 @@ public class PolicyCallbackHandlerService {
                 .map(PolicyRequestHistory::getStatus)
                 .toList();
 
-        if (historyStatuses.contains(PAYMENT_CONFIRMED.name()) && historyStatuses.contains(SUBSCRIPTION_AUTHORIZED.name())) {
+        if (historyStatuses.contains(PAYMENT_APPROVED.name()) && historyStatuses.contains(SUBSCRIPTION_APPROVED.name())) {
             log.info("Solicitação {} aprovada.", policyRequest.getId());
             policyRequest.addHistory(APPROVED.name());
         }

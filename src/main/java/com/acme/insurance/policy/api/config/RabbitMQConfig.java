@@ -4,7 +4,8 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -19,10 +20,6 @@ import static com.acme.insurance.policy.api.domain.constants.QueueNames.POLICY_S
 public class RabbitMQConfig {
 
     private static final String POLICY_EXCHANGE = "policy.exchange";
-    private static final String POLICY_RETRY_QUEUE = "policy.retry.queue";
-    private static final String POLICY_DEAD_QUEUE = "policy.dead.queue";
-    private static final int RETRY_QUEUE_TTL = 5000;
-    private static final int RETRY_QUEUE_MAX_LENGTH = 3;
 
     @Bean
     public DirectExchange policyExchange() {
@@ -78,13 +75,20 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue policyRetryQueue() {
-        return QueueBuilder.durable(POLICY_RETRY_QUEUE)
-                .deadLetterExchange(POLICY_EXCHANGE)
-                .deadLetterRoutingKey(POLICY_DEAD_QUEUE)
-                .ttl(RETRY_QUEUE_TTL)
-                .maxLength(RETRY_QUEUE_MAX_LENGTH)
-                .build();
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+            org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory,
+            Jackson2JsonMessageConverter messageConverter) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(messageConverter);
+
+        RetryInterceptorBuilder.StatelessRetryInterceptorBuilder retryInterceptorBuilder =
+                RetryInterceptorBuilder.stateless()
+                        .maxAttempts(3)
+                        .backOffOptions(1000, 2.0, 10000);
+
+        factory.setAdviceChain(retryInterceptorBuilder.build());
+        return factory;
     }
 
     @Bean

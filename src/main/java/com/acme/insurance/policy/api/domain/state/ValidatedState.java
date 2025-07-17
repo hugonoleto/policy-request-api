@@ -36,7 +36,7 @@ public class ValidatedState implements PolicyState {
         log.info("Solicitação {} enviada para serviço de Pagamento", policyRequest.getId());
 
         publisher.publish(new GenericEvent(policyRequest.getId()), QueueNames.POLICY_SUBSCRIPTION);
-        log.info("Solicitação {} enviada para serviço de Subscrição", policyRequest.getId());
+        log.info("Solicitação {} enviada para serviço de Assinatura", policyRequest.getId());
 
     }
 }

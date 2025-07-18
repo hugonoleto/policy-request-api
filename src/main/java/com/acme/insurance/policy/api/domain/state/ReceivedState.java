@@ -1,7 +1,7 @@
 package com.acme.insurance.policy.api.domain.state;
 
+import com.acme.insurance.policy.api.domain.event.EventPublisher;
 import com.acme.insurance.policy.api.domain.event.GenericEvent;
-import com.acme.insurance.policy.api.infrastructure.messaging.GenericEventPublisher;
 import com.acme.insurance.policy.api.domain.model.FraudAnalysis;
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.repository.PolicyRequestRepository;
@@ -24,7 +24,7 @@ public class ReceivedState implements PolicyState {
     private final FraudAnalysisService fraudAnalysisService;
     private final CustomerRiskProfileValidationService customerRiskProfileValidationService;
     private final PolicyRequestRepository repository;
-    private final GenericEventPublisher publisher;
+    private final EventPublisher publisher;
 
     @Override
     public State current() {

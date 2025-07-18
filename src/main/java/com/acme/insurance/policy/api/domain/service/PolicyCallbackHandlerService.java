@@ -1,11 +1,11 @@
 package com.acme.insurance.policy.api.domain.service;
 
+import com.acme.insurance.policy.api.domain.event.EventPublisher;
 import com.acme.insurance.policy.api.domain.event.GenericEvent;
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.model.PolicyRequestHistory;
 import com.acme.insurance.policy.api.domain.model.enums.PaymentSubscriptionStatus;
 import com.acme.insurance.policy.api.domain.repository.PolicyRequestRepository;
-import com.acme.insurance.policy.api.infrastructure.messaging.GenericEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ import static com.acme.insurance.policy.api.domain.state.State.SUBSCRIPTION_REJE
 public class PolicyCallbackHandlerService {
 
     private final PolicyRequestRepository repository;
-    private final GenericEventPublisher publisher;
+    private final EventPublisher publisher;
 
     public void handlePaymentStatusUpdate(PolicyRequest policyRequest, PaymentSubscriptionStatus paymentSubscriptionStatus) {
         log.info("Atualizando status de pagamento para solicitação com ID: {}, Status: {}",

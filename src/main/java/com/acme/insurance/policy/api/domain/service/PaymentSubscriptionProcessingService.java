@@ -1,12 +1,12 @@
 package com.acme.insurance.policy.api.domain.service;
 
 import com.acme.insurance.policy.api.domain.constants.QueueNames;
+import com.acme.insurance.policy.api.domain.event.EventPublisher;
 import com.acme.insurance.policy.api.domain.event.PaymentSubscriptionStatusEvent;
 import com.acme.insurance.policy.api.domain.exception.PolicyBadRequestException;
 import com.acme.insurance.policy.api.domain.model.PolicyRequest;
 import com.acme.insurance.policy.api.domain.model.enums.EntityType;
 import com.acme.insurance.policy.api.domain.model.enums.PaymentSubscriptionStatus;
-import com.acme.insurance.policy.api.infrastructure.messaging.GenericEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class PaymentSubscriptionProcessingService {
 
     private final ActivePolicyRequestSearchService activePolicyRequestSearchService;
     private final CustomerBlockedExistsService customerBlockedExistsService;
-    private final GenericEventPublisher publisher;
+    private final EventPublisher publisher;
 
     private static final String INVALID_STATUS_MESSAGE = "Status inválido para processamento de %s.";
 

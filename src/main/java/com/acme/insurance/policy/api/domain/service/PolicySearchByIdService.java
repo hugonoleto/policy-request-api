@@ -17,8 +17,7 @@ public class PolicySearchByIdService {
     private static final String ERROR_MESSAGE = "A solicitação de apólice informada não existe.";
 
     public PolicyRequest search(UUID id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new PolicyNotFoundException(ERROR_MESSAGE));
+        return repository.findById(id).orElseThrow(() -> new PolicyNotFoundException(ERROR_MESSAGE));
     }
 
 }

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.acme.insurance.policy.api.domain.state.State.APPROVED;
+import static com.acme.insurance.policy.api.domain.state.State.PENDING;
 import static com.acme.insurance.policy.api.domain.state.State.REJECTED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,7 +44,7 @@ class PolicyRequestControllerIT {
         UUID id = response.getBody().getId();
         assertThat(id).isNotNull();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
@@ -61,7 +62,7 @@ class PolicyRequestControllerIT {
         UUID id = response.getBody().getId();
         assertThat(id).isNotNull();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
@@ -79,7 +80,7 @@ class PolicyRequestControllerIT {
         UUID id = response.getBody().getId();
         assertThat(id).isNotNull();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
@@ -96,7 +97,7 @@ class PolicyRequestControllerIT {
         assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
@@ -113,10 +114,78 @@ class PolicyRequestControllerIT {
         assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
+    }
+
+    @Test
+    void shouldApproveHighRiskResidentialWhenInsuredAmountIsValid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("44444444-4444-4444-4444-444444444444"), "RESIDENTIAL", BigDecimal.valueOf(150000));
+        
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+        
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+        
+        Thread.sleep(4000);
+        
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo("APPROVED");
+    }
+
+    @Test
+    void shouldRejectHighRiskResidentialWhenInsuredAmountIsInvalid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("44444444-4444-4444-4444-444444444444"), "RESIDENTIAL", BigDecimal.valueOf(150001));
+        
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+        
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+        
+        Thread.sleep(4000);
+        
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo("REJECTED");
+    }
+
+    @Test
+    void shouldApproveHighRiskOtherCategoryWhenInsuredAmountIsValid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("44444444-4444-4444-4444-444444444444"), "OUTRA", BigDecimal.valueOf(125000));
+        
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+        
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+        
+        Thread.sleep(4000);
+        
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo("APPROVED");
+    }
+
+    @Test
+    void shouldRejectHighRiskOtherCategoryWhenInsuredAmountIsInvalid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("44444444-4444-4444-4444-444444444444"), "OUTRA", BigDecimal.valueOf(125001));
+        
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+        
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+        
+        Thread.sleep(4000);
+        
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo("REJECTED");
     }
 
     @Test
@@ -130,7 +199,7 @@ class PolicyRequestControllerIT {
         assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
@@ -147,7 +216,75 @@ class PolicyRequestControllerIT {
         assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
+    }
+    
+    @Test
+    void shouldApprovePreferentialLifeWhenInsuredAmountIsValid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("55555555-5555-5555-5555-555555555555"), "LIFE", BigDecimal.valueOf(800000));
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+
+        Thread.sleep(4000);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
+    }
+
+    @Test
+    void shouldRejectPreferentialLifeWhenInsuredAmountIsInvalid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("55555555-5555-5555-5555-555555555555"), "LIFE", BigDecimal.valueOf(800001));
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+
+        Thread.sleep(4000);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
+    }
+
+    @Test
+    void shouldApprovePreferentialOtherCategoryWhenInsuredAmountIsValid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("55555555-5555-5555-5555-555555555555"), "OUTRA", BigDecimal.valueOf(375000));
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+
+        Thread.sleep(4000);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
+    }
+
+    @Test
+    void shouldRejectPreferentialOtherCategoryWhenInsuredAmountIsInvalid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("55555555-5555-5555-5555-555555555555"), "OUTRA", BigDecimal.valueOf(375001));
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
@@ -164,7 +301,7 @@ class PolicyRequestControllerIT {
         assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
@@ -181,7 +318,75 @@ class PolicyRequestControllerIT {
         assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
+    }
+
+    @Test
+    void shouldApproveNoInformationAutoWhenInsuredAmountIsValid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("66666666-6666-6666-6666-666666666666"), "AUTO", BigDecimal.valueOf(75000));
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+
+        Thread.sleep(4000);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
+    }
+
+    @Test
+    void shouldRejectNoInformationAutoWhenInsuredAmountIsInvalid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("66666666-6666-6666-6666-666666666666"), "AUTO", BigDecimal.valueOf(75001));
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+
+        Thread.sleep(4000);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
+    }
+
+    @Test
+    void shouldApproveNoInformationOtherCategoryWhenInsuredAmountIsValid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("66666666-6666-6666-6666-666666666666"), "OUTRA", BigDecimal.valueOf(55000));
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+
+        Thread.sleep(4000);
+
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
+    }
+
+    @Test
+    void shouldRejectNoInformationOtherCategoryWhenInsuredAmountIsInvalid() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(
+                UUID.fromString("66666666-6666-6666-6666-666666666666"), "OUTRA", BigDecimal.valueOf(55001));
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertNotNull(response.getBody());
+        UUID id = response.getBody().getId();
+
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
@@ -198,7 +403,7 @@ class PolicyRequestControllerIT {
         assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(APPROVED.name());
@@ -215,7 +420,7 @@ class PolicyRequestControllerIT {
         assertNotNull(response.getBody());
         UUID id = response.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo(REJECTED.name());
@@ -307,9 +512,13 @@ class PolicyRequestControllerIT {
         assertNotNull(createResponse.getBody());
         UUID id = createResponse.getBody().getId();
 
+        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        policyRequest.setStatus(PENDING.name());
+        policyRequestRepository.save(policyRequest);
+
         restTemplate.patchForObject(BASE_PATH + "/" + id + "/cancel", null, Void.class);
 
-        PolicyRequest policyRequest = policyRequestRepository.findById(id).orElseThrow();
+        policyRequest = policyRequestRepository.findById(id).orElseThrow();
         assertThat(policyRequest.getStatus()).isEqualTo("CANCELED");
     }
 
@@ -322,16 +531,18 @@ class PolicyRequestControllerIT {
         assertNotNull(createResponse.getBody());
         UUID id = createResponse.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         var response = restTemplate.exchange(
                 BASE_PATH + "/" + id + "/cancel",
                 org.springframework.http.HttpMethod.PATCH,
                 null,
-                Void.class
+                ErrorDetailsDTO.class
         );
 
         assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertNotNull(response.getBody());
+        assertThat(response.getBody().getMessage()).isEqualTo("A solicitação de apólice não existe ou está finalizada.");
     }
 
     @Test
@@ -389,7 +600,7 @@ class PolicyRequestControllerIT {
         assertNotNull(createResponse.getBody());
         UUID id = createResponse.getBody().getId();
 
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         var response = restTemplate.getForEntity(BASE_PATH + "?status=APPROVED", PolicyRequestResponseDTO[].class);
 

@@ -36,7 +36,7 @@ Isso irá subir:
 
  Rode a aplicação Spring Boot:
    ```bash
-   ./mvnw spring-boot:run
+   mvn spring-boot:run
    ```
 
 ---
@@ -114,9 +114,9 @@ Além disso, o arquivo `policy_request_api.postman_collection.json`, disponível
 
 ### Executando os testes
 
-```bash
-./mvnw test
-```
+   ```bash
+   mvn test
+   ```
 
 ---
 

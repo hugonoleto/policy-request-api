@@ -19,6 +19,8 @@ Clone o projeto:
 
 ```bash
 git clone https://github.com/hugonoleto/policy-request-api
+cd policy-request-api
+git checkout main
 ```
 
 ### Subindo a infraestrutura

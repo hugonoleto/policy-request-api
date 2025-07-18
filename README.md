@@ -70,6 +70,43 @@ Utilize este endereço para explorar e testar os endpoints da API de forma visua
 5. **Histórico e Estados**: Cada transição de estado é registrada e publicada.
 6. **Cancelamento**: Permite cancelar solicitações exceto quando já aprovadas/rejeitadas.
 
+### Ciclo de Vida da Solicitação de Apólice
+
+O sistema gerencia todo o ciclo de vida das solicitações de apólice através de uma máquina de estados bem definida, garantindo integridade do processo e rastreabilidade das operações.
+
+#### Estados da Solicitação
+
+- **RECEIVED** - Estado inicial quando uma solicitação é criada. Neste momento, o sistema coleta as informações iniciais e inicia a análise pela API de fraudes.
+
+- **VALIDATED** - Indica que a solicitação passou pela análise de fraude com sucesso e o perfil do cliente foi validado conforme as regras de negócio específicas para sua classificação de risco.
+
+- **PENDING** - Após validação bem-sucedida, a solicitação permanece pendente aguardando as confirmações dos serviços de pagamento e subscrição.
+
+- **PAYMENT_APPROVED** - Indica que o serviço de Pagamento processou e aprovou a transação financeira da solicitação.
+
+- **PAYMENT_REJECTED** - Indica que o serviço de Pagamento rejeitou a transação financeira, impossibilitando o prosseguimento da solicitação.
+
+- **SUBSCRIPTION_APPROVED** - Indica que o serviço de Subscrição analisou e autorizou a emissão da apólice solicitada.
+
+- **SUBSCRIPTION_REJECTED** - Indica que o serviço de Subscrição rejeitou a emissão da apólice após análise dos parâmetros.
+
+- **REJECTED** - Estado final que indica rejeição da solicitação, seja por não passar na validação de fraude ou por não receber aprovação dos serviços de pagamento e/ou subscrição.
+
+- **APPROVED** - Estado final de aprovação, alcançado somente após confirmação positiva tanto do pagamento quanto da subscrição.
+
+- **CANCELED** - Estado de cancelamento que pode ser solicitado pelo cliente em qualquer momento do fluxo, exceto quando a solicitação já estiver em estado terminal (aprovada ou rejeitada).
+
+#### Fluxo de Transições
+
+1. Toda solicitação inicia em **RECEIVED**
+2. De **RECEIVED** pode transitar para **VALIDATED** (se aprovada na análise de fraude) ou **REJECTED** (se reprovada)
+3. De **VALIDATED** segue para **PENDING** aguardando processamento externo
+4. Durante o estado **PENDING**, os serviços processam a solicitação resultando nos estados intermediários **PAYMENT_APPROVED/REJECTED** e **SUBSCRIPTION_APPROVED/REJECTED**
+5. De **PENDING** pode transitar para **APPROVED** (quando ambos serviços aprovam) ou **REJECTED** (quando qualquer serviço rejeita)
+6. O estado **CANCELED** pode ser alcançado a partir de **RECEIVED**, **VALIDATED** ou **PENDING**, mas não a partir de estados terminais
+
+Este ciclo de vida garante consistência no processamento das solicitações e permite rastrear com precisão o progresso de cada pedido através do sistema.
+
 ---
 
 ## Decisões e Racional

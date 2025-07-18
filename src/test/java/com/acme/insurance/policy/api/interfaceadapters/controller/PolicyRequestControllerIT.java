@@ -222,6 +222,57 @@ class PolicyRequestControllerIT {
     }
 
     @Test
+    void shouldReturnBadRequestWhenCustomerIdIsNull() {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(null, "AUTO", BigDecimal.valueOf(1000));
+        dto.setProductId(UUID.randomUUID());
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, ErrorDetailsDTO.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertNotNull(response.getBody());
+        assertThat(response.getBody().getMessage()).isEqualTo("Erro de validação nos campos fornecidos.");
+        assertThat(response.getBody().getErrors()).containsKey("customerId");
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenInsuredAmountIsLessThanOne() {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.ZERO);
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, ErrorDetailsDTO.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertNotNull(response.getBody());
+        assertThat(response.getBody().getMessage()).isEqualTo("Erro de validação nos campos fornecidos.");
+        assertThat(response.getBody().getErrors()).containsKey("insuredAmount");
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenCoveragesIsEmpty() {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(1000));
+        dto.setCoverages(Map.of());
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, ErrorDetailsDTO.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertNotNull(response.getBody());
+        assertThat(response.getBody().getMessage()).isEqualTo("Erro de validação nos campos fornecidos.");
+        assertThat(response.getBody().getErrors()).containsKey("coverages");
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenAssistancesIsEmpty() {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(1000));
+        dto.setAssistances(List.of());
+
+        var response = restTemplate.postForEntity(BASE_PATH, dto, ErrorDetailsDTO.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertNotNull(response.getBody());
+        assertThat(response.getBody().getMessage()).isEqualTo("Erro de validação nos campos fornecidos.");
+        assertThat(response.getBody().getErrors()).containsKey("assistances");
+    }
+
+    @Test
     void shouldFindPolicyRequestById() {
         PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(5000));
 
@@ -281,6 +332,83 @@ class PolicyRequestControllerIT {
         );
 
         assertThat(response.getStatusCode().value()).isEqualTo(400);
+    }
+
+    @Test
+    void shouldFilterByCustomerId() {
+        UUID customerId = UUID.randomUUID();
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(customerId, "AUTO", BigDecimal.valueOf(1000));
+
+        var createResponse = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertNotNull(createResponse.getBody());
+        UUID id = createResponse.getBody().getId();
+
+        var response = restTemplate.getForEntity(BASE_PATH + "?customerId=" + customerId, PolicyRequestResponseDTO[].class);
+
+        assertThat(response.getBody()).extracting("id").contains(id);
+    }
+
+    @Test
+    void shouldFilterByProductId() {
+        UUID productId = UUID.randomUUID();
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(1000));
+        dto.setProductId(productId);
+
+        var createResponse = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertNotNull(createResponse.getBody());
+        UUID id = createResponse.getBody().getId();
+
+        var response = restTemplate.getForEntity(BASE_PATH + "?productId=" + productId, PolicyRequestResponseDTO[].class);
+
+        assertThat(response.getBody()).extracting("id").contains(id);
+    }
+
+    @Test
+    void shouldFilterByCategory() {
+        String category = "RESIDENTIAL";
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), category, BigDecimal.valueOf(1000));
+
+        var createResponse = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertNotNull(createResponse.getBody());
+        UUID id = createResponse.getBody().getId();
+
+        var response = restTemplate.getForEntity(BASE_PATH + "?category=" + category, PolicyRequestResponseDTO[].class);
+
+        assertThat(response.getBody()).extracting("id").contains(id);
+    }
+
+    @Test
+    void shouldFilterByStatus() throws InterruptedException {
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(1000));
+
+        var createResponse = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertNotNull(createResponse.getBody());
+        UUID id = createResponse.getBody().getId();
+
+        Thread.sleep(5000);
+
+        var response = restTemplate.getForEntity(BASE_PATH + "?status=APPROVED", PolicyRequestResponseDTO[].class);
+
+        assertThat(response.getBody()).extracting("id").contains(id);
+    }
+
+    @Test
+    void shouldFilterBySalesChannel() {
+        String salesChannel = "ONLINE";
+        PolicyRequestCreateDTO dto = createPolicyRequestCreateDTO(UUID.randomUUID(), "AUTO", BigDecimal.valueOf(1000));
+
+        var createResponse = restTemplate.postForEntity(BASE_PATH, dto, PolicyRequestCreatedResponseDTO.class);
+
+        assertNotNull(createResponse.getBody());
+        UUID id = createResponse.getBody().getId();
+
+        var response = restTemplate.getForEntity(BASE_PATH + "?salesChannel=" + salesChannel, PolicyRequestResponseDTO[].class);
+
+        assertThat(response.getBody()).extracting("id").contains(id);
     }
 
     private PolicyRequestCreateDTO createPolicyRequestCreateDTO(UUID customerId, String category, BigDecimal insuredAmount) {
